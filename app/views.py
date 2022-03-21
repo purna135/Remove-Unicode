@@ -5,23 +5,23 @@ import os
 
 
 def index(request):
-    if request.method == 'POST':
-        myfile = request.FILES['code']
+    if request.method != 'POST':
+        return render(request, 'index.html')
+    myfile = request.FILES['code']
 
-        dist = {"“": "\"", "”": "\"", "‘": "\'", "’": "\'", "–": "-", "—": "-", " ": " ", "…": "..."}
-        ans = ""
-        code = myfile.read()
-        code = code.decode()
+    dist = {"“": "\"", "”": "\"", "‘": "\'", "’": "\'", "–": "-", "—": "-", " ": " ", "…": "..."}
+    ans = ""
+    code = myfile.read()
+    code = code.decode()
 
-        for ch in code:
-            if ord(ch) > 128:
-                if ch in dist:
-                    ans += dist[ch]
-                else:
-                    message = "A new Unicode if Found, Please contact administrator: "+ch
-                    return render(request, 'index.html', {"error": message})
+    for ch in code:
+        if ord(ch) > 128:
+            if ch in dist:
+                ans += dist[ch]
             else:
-                ans += ch
+                message = "A new Unicode if Found, Please contact administrator: "+ch
+                return render(request, 'index.html', {"error": message})
+        else:
+            ans += ch
 
-        return render(request, 'index.html', {"ans": ans})
-    return render(request, 'index.html')
+    return render(request, 'index.html', {"ans": ans})
